@@ -1,0 +1,38 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    // Pending images: users can upload to their own folder only
+    // Images here are awaiting moderation
+    match /pending/{userId}/{imageId} {
+      allow write: if request.auth != null 
+                   && request.auth.uid == userId
+                   && request.resource.size < 25 * 1024 * 1024  // 25MB max
+                   && request.resource.contentType.matches('image/.*');
+      
+      // Users cannot read pending images (only backend can)
+      allow read: if false;
+    }
+    
+    // Approved images: users can read images from conversations they're in
+    // For simplicity in MVP, allow authenticated users to read approved images
+    match /approved/{userId}/{imageId} {
+      allow read: if request.auth != null;
+      
+      // Only backend (Cloud Functions) can write to approved
+      allow write: if false;
+    }
+    
+    // Thumbnails: same rules as approved images
+    match /thumbnails/{userId}/{imageId} {
+      allow read: if request.auth != null;
+      
+      // Only backend can write
+      allow write: if false;
+    }
+    
+    // Queued images: no client access (backend only)
+    match /queued/{userId}/{imageId} {
+      allow read, write: if false;
+    }
+  }
+}

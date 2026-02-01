@@ -1,0 +1,52 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Moderation logs: only backend can write, admins can read
+    match /moderation_logs/{logId} {
+      allow read: if false;  // Admin SDK bypasses this
+      allow write: if false; // Only Cloud Functions can write
+    }
+    
+    // Blocked content: only backend access
+    match /blocked_content/{docId} {
+      allow read, write: if false;
+    }
+    
+    // User violations: only backend access
+    match /user_violations/{userId} {
+      allow read, write: if false;
+    }
+    
+    // Reports: authenticated users can create reports
+    match /reports/{reportId} {
+      // Users can create reports
+      allow create: if request.auth != null
+                    && request.resource.data.reporterId == request.auth.uid
+                    && request.resource.data.category in ['spam', 'harassment', 'inappropriate', 'other']
+                    && request.resource.data.messageId is string;
+      
+      // Users cannot read or modify reports
+      allow read, update, delete: if false;
+    }
+    
+    // Rate limiting collection: only backend access
+    match /rate_limits/{userId} {
+      allow read, write: if false;
+    }
+    
+    // Messages collection (if managed by this backend)
+    match /messages/{messageId} {
+      allow read: if request.auth != null;
+      allow create: if request.auth != null
+                    && request.resource.data.senderId == request.auth.uid;
+      allow update, delete: if false;
+    }
+    
+    // Conversations collection
+    match /conversations/{conversationId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null;
+    }
+  }
+}

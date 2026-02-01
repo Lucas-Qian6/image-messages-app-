@@ -1,0 +1,38 @@
+# Content Moderation Blocklist
+# Based on open-source profanity lists
+# Lines starting with # are comments
+# Each line contains one word or phrase to block
+# This list is intentionally minimal for demonstration - expand as needed
+
+# Slurs and hate speech (redacted examples - add real terms in production)
+# NOTE: In production, use a comprehensive list from:
+# - https://github.com/surge-ai/profanity
+# - https://github.com/LDNOOBW/List-of-Dirty-Naughty-Obscene-and-Otherwise-Bad-Words
+
+# Explicit sexual content
+porn
+pornography
+xxx
+nsfw
+
+# Violence
+kill yourself
+kys
+die in a fire
+murder you
+
+# Harassment
+go die
+hate you so much
+worthless piece
+human garbage
+
+# Spam patterns
+buy now
+free money
+click here
+make money fast
+nigerian prince
+
+# Placeholder - add more terms from open-source lists
+# The actual blocklist should contain hundreds of terms
