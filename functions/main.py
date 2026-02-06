@@ -17,6 +17,7 @@ from firebase_functions import https_fn, storage_fn, scheduler_fn, options
 from firebase_admin import auth
 
 from utils import (
+    get_env_var, 
     initialize_firebase,
     parse_storage_path,
     get_storage_bucket,
@@ -55,7 +56,8 @@ initialize_firebase()
 # ============================================================================
 
 @storage_fn.on_object_finalized(
-    bucket=options.USE_DEFAULT,
+    region="US-CENTRAL1",
+    bucket = "amialone-ba57a.firebasestorage.app",
     memory=options.MemoryOption.MB_512,
     timeout_sec=120,
 )
