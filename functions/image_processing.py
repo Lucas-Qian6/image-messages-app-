@@ -226,8 +226,11 @@ def upload_processed_images(
     # Determine file extensions
     compressed_ext = 'png' if processed.compressed_format == 'PNG' else 'jpg'
     
+    # Strip existing extension from image_id if present
+    base_image_id = image_id.rsplit('.', 1)[0] if '.' in image_id else image_id
+    
     # Upload compressed version to /approved/
-    approved_path = f"approved/{user_id}/{image_id}.{compressed_ext}"
+    approved_path = f"approved/{user_id}/{base_image_id}.{compressed_ext}"
     approved_blob = bucket.blob(approved_path)
     approved_blob.upload_from_string(
         processed.compressed_bytes,
@@ -235,7 +238,7 @@ def upload_processed_images(
     )
     
     # Upload thumbnail to /thumbnails/
-    thumbnail_path = f"thumbnails/{user_id}/{image_id}.jpg"
+    thumbnail_path = f"thumbnails/{user_id}/{base_image_id}.jpg"
     thumbnail_blob = bucket.blob(thumbnail_path)
     thumbnail_blob.upload_from_string(
         processed.thumbnail_bytes,

@@ -56,7 +56,7 @@ initialize_firebase()
 # ============================================================================
 
 @storage_fn.on_object_finalized(
-    region="US-CENTRAL1",
+    region="us-central1",
     bucket = "amialone-ba57a.firebasestorage.app",
     memory=options.MemoryOption.MB_512,
     timeout_sec=120,
